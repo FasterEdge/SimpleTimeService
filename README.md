@@ -1,6 +1,6 @@
 <div align="center">
   <img src="./Logo.png" alt="logo" width="96" />
-  <h3>SimpleTimeService · 本地/NTP 时间服务</h3>
+  <h3>SimpleTimeService · 本地/NTP时间服务</h3>
 </div>
 
 ### 项目简介
