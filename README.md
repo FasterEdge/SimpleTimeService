@@ -5,7 +5,7 @@
 
 ### 项目简介
 - 提供本地UTC时间与可偏移时间的JSON接口（多种DateTime大小写，兼容不同客户端）
-- 支持基于NTP（pool.ntp.org）获取更准确的 UTC 时间，亦可叠加自定义偏移
+- 支持基于NTP（pool.ntp.org）获取更准确的UTC时间，亦可叠加自定义偏移
 - 时间格式统一为RFC3339Nano，便于纳秒级解析（兼容示例fetchNetworkTime）
 
 ### 快速开始
