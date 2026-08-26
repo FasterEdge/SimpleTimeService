@@ -11,7 +11,10 @@ import (
 )
 
 // 默认参数
-const defaultPort = "8080"
+const (
+	defaultPort = "8080"
+	version     = "1.0.20260826"
+)
 
 // 为了适配各种对时工具，这里各种大小写的DateTime都返回，避免因为大小写不匹配导致的对时失败
 type timeResponse struct {
@@ -21,6 +24,7 @@ type timeResponse struct {
 }
 
 func main() {
+	log.Printf("SimpleTimeService %s By FasterEdge", version)
 	portFlag := flag.String("port", defaultPort, "port to listen on")
 	offsetFlag := flag.Duration("offset", 0, "time offset to add to now (e.g. 100ns, 50ms, 1s)")
 	flag.Parse()
