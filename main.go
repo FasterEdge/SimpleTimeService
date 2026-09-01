@@ -27,7 +27,7 @@ func queryNTP() (time.Time, error) {
 // 默认参数
 const (
 	defaultPort = "8080"
-	version     = "1.0.20260901"
+	version     = "1.0.20260902"
 )
 
 // 为了适配各种对时工具，这里各种大小写的DateTime都返回，避免因为大小写不匹配导致的对时失败
