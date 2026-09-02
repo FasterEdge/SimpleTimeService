@@ -1,9 +1,9 @@
-module SimpleTimeService
+module github.com/FasterEdge/SimpleTimeService
 
 go 1.25.5
 
 require (
-	github.com/beevik/ntp v1.4.3
+	github.com/beevik/ntp v1.5.0
 	github.com/gin-gonic/gin v1.12.0
 )
 
