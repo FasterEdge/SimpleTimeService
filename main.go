@@ -37,13 +37,12 @@ type timeResponse struct {
 	DataTimeAllLow string `json:"datetime"`
 }
 
-func main() {
-	log.Printf("SimpleTimeService %s By FasterEdge", version)
-	portFlag := flag.String("port", defaultPort, "port to listen on")
-	offsetFlag := flag.Duration("offset", 0, "time offset to add to now (e.g. 100ns, 50ms, 1s)")
-	flag.Parse()
-
-	r := gin.Default()
+// newRouter 构建全部 HTTP 路由（提取自 main，便于测试）。
+// offset 为时间偏移量，作用于 /offset_time 与 /offset_npt_time。
+func newRouter(offset time.Duration) *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+	r.Use(gin.Recovery())
 
 	// 直接返回当前UTC时间，格式为RFC3339Nano，包含纳秒级别的时间戳
 	r.GET("/time", func(c *gin.Context) {
@@ -53,7 +52,7 @@ func main() {
 
 	// 返回带偏移量的当前UTC时间，格式同上
 	r.GET("/offset_time", func(c *gin.Context) {
-		now := time.Now().UTC().Add(*offsetFlag).Format(time.RFC3339Nano)
+		now := time.Now().UTC().Add(offset).Format(time.RFC3339Nano)
 		c.JSON(http.StatusOK, timeResponse{DateTime: now, DateTimeLow: now, DataTimeAllLow: now})
 	})
 
@@ -75,14 +74,23 @@ func main() {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch ntp time"})
 			return
 		}
-		now := t.UTC().Add(*offsetFlag).Format(time.RFC3339Nano)
+		now := t.UTC().Add(offset).Format(time.RFC3339Nano)
 		c.JSON(http.StatusOK, timeResponse{DateTime: now, DateTimeLow: now, DataTimeAllLow: now})
 	})
+
+	return r
+}
+
+func main() {
+	log.Printf("SimpleTimeService %s By FasterEdge", version)
+	portFlag := flag.String("port", defaultPort, "port to listen on")
+	offsetFlag := flag.Duration("offset", 0, "time offset to add to now (e.g. 100ns, 50ms, 1s)")
+	flag.Parse()
 
 	// 启动服务器（带读写超时，防止慢连接占用资源）
 	srv := &http.Server{
 		Addr:         ":" + *portFlag,
-		Handler:      r,
+		Handler:      newRouter(*offsetFlag),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,
